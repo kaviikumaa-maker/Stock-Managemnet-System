@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <div id="app">
+      <!-- Auth Section -->
+      <section id="auth-section" class="active auth-container glass-container">
+        <div class="auth-box">
+          <div class="logo">📦 Stockify</div>
+          <h2 id="auth-title">Welcome Back</h2>
+          <p class="subtitle" id="auth-subtitle">Enter your credentials to access the vault.</p>
+          
+          <form id="auth-form">
+            <div class="input-group">
+              <label for="username">Username</label>
+              <input type="text" id="username" placeholder="Enter username" required />
+            </div>
+            <div class="input-group">
+              <label for="password">Password</label>
+              <div class="password-wrapper">
+                <input type="password" id="password" placeholder="Enter password" required />
+                <button type="button" id="toggle-password" class="password-toggle" title="Toggle password visibility">
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+              </div>
+            </div>
+            <div class="form-options">
+              <label class="remember-me">
+                <input type="checkbox" id="remember-me" checked>
+                <span class="checkmark"></span>
+                Remember me
+              </label>
+            </div>
+            <p id="auth-error" class="error-msg"></p>
+            <button type="submit" id="auth-submit-btn" class="btn-primary auth-submit">Login</button>
+          </form>
+          
+          <div class="auth-switch">
+            <p><span id="auth-switch-text">Don't have an account?</span> <a href="#" id="auth-switch-link">Sign up</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main App Section -->
+    <section id="main-app-section" class="hidden">
+      <header class="glass-header">
+        <div class="logo">📦 Stockify</div>
+        <div class="user-info">
+          <span id="user-display">Admin</span>
+          <button id="logout-btn" class="btn-secondary">Logout</button>
+        </div>
+      </header>
+
+      <!-- Stores View -->
+      <main id="stores-view" class="dashboard-content">
+        <div class="toolbar">
+          <h2>Your Stores</h2>
+          <button id="add-store-btn" class="btn-primary">+ Add New Store</button>
+        </div>
+        <div id="stores-empty-state" class="hidden" style="text-align: center; padding: 4rem 2rem; color: var(--text-muted);">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">🏪</div>
+          <h3>No stores yet</h3>
+          <p>Create your first store to start managing inventory.</p>
+        </div>
+        <div id="stores-grid" class="store-grid">
+          <!-- Store cards injected here -->
+        </div>
+      </main>
+
+      <!-- Items View -->
+      <main id="items-view" class="dashboard-content hidden">
+        <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <button id="back-to-stores-btn" class="btn-secondary">← Back</button>
+            <h2 id="current-store-title">Store Inventory</h2>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <button id="view-profit-btn" class="btn-secondary">📈 View Profit/Loss</button>
+            <button id="add-item-btn" class="btn-primary">+ Add New Stock</button>
+          </div>
+        </div>
+
+          <div id="items-empty-state" class="hidden" style="text-align: center; padding: 4rem 2rem; color: var(--text-muted);">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+            <h3>No inventory found</h3>
+            <p>This store is currently empty. Add some stock to get started!</p>
+          </div>
+
+          <div class="table-container glass-container" id="items-table-container">
+            <table id="stock-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                  <th>Price (₹)</th>
+                  <th>Description</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="stock-tbody">
+                <!-- Data will be injected here -->
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </section>
+
+      <!-- Store Modal -->
+      <div id="store-modal" class="modal hidden">
+        <div class="modal-content glass-container">
+          <div class="modal-title-wrapper">
+            <h3 id="store-modal-title">Add Store</h3>
+          </div>
+          <form id="store-form">
+            <input type="hidden" id="store-id" />
+            <div class="input-group">
+              <label for="store-name">Store Name</label>
+              <input type="text" id="store-name" required />
+            </div>
+            <div class="input-group">
+              <label for="store-desc">Description</label>
+              <textarea id="store-desc" rows="3"></textarea>
+            </div>
+            <div class="modal-actions">
+              <button type="button" id="cancel-store-modal-btn" class="btn-secondary">Cancel</button>
+              <button type="submit" class="btn-primary">Save Store</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal for Create/Edit Item -->
+      <div id="item-modal" class="modal hidden">
+        <div class="modal-content glass-container">
+          <div class="modal-title-wrapper">
+            <h3 id="modal-title">Add Stock</h3>
+          </div>
+          <form id="item-form">
+            <input type="hidden" id="item-id" />
+            <div class="input-group">
+              <label for="item-name">Name</label>
+              <input type="text" id="item-name" required />
+            </div>
+            <div class="row">
+              <div class="input-group">
+              <label for="item-quantity">Quantity</label>
+              <input type="number" id="item-quantity" min="0" required>
+            </div>
+            <div class="input-group">
+              <label for="item-cost-price">Cost Price (₹)</label>
+              <input type="number" id="item-cost-price" step="0.01" min="0" required>
+            </div>
+            <div class="input-group">
+              <label for="item-price">Selling Price (₹)</label>
+              <input type="number" id="item-price" step="0.01" min="0" required>
+            </div>
+            </div>
+            <div class="input-group">
+              <label for="item-desc">Description</label>
+              <textarea id="item-desc" rows="3"></textarea>
+            </div>
+            <div class="modal-actions">
+              <button type="button" id="cancel-modal-btn" class="btn-secondary">Cancel</button>
+              <button type="submit" class="btn-primary">Save Item</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Confirm Modal -->
+      <div id="confirm-modal" class="modal hidden">
+        <div class="modal-content glass-container" style="max-width: 400px; text-align: center;">
+          <h3 id="confirm-title" style="margin-bottom: 1rem;">Are you sure?</h3>
+          <p id="confirm-message" style="color: var(--text-muted); margin-bottom: 2rem;">This action cannot be undone.</p>
+          <div style="display: flex; gap: 1rem; justify-content: center;">
+            <button id="confirm-cancel-btn" class="btn-secondary">Cancel</button>
+            <button id="confirm-ok-btn" class="btn-danger">Yes, Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sell Modal -->
+      <div id="sell-modal" class="modal hidden">
+        <div class="modal-content glass-container" style="max-width: 400px;">
+          <h2 style="margin-bottom: 1.5rem;">Sell Item</h2>
+          <form id="sell-form">
+            <input type="hidden" id="sell-item-id">
+            <div class="input-group">
+              <label for="sell-quantity">Quantity to Sell</label>
+              <input type="number" id="sell-quantity" min="1" required>
+            </div>
+            <div class="flex-between" style="margin-top: 2rem;">
+              <button type="button" id="cancel-sell-btn" class="btn-secondary">Cancel</button>
+              <button type="submit" class="btn-primary">Sell</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Profit/Loss Modal -->
+      <div id="profit-modal" class="modal hidden">
+        <div class="modal-content glass-container" style="max-width: 600px;">
+          <h2 style="margin-bottom: 1.5rem;">Profit & Loss Dashboard</h2>
+          <div style="display: flex; gap: 2rem; margin-bottom: 2rem;">
+            <div style="flex: 1; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 12px; text-align: center;">
+              <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">Total Revenue</div>
+              <div id="profit-total-revenue" style="font-size: 2rem; font-weight: bold; color: white;">₹0.00</div>
+            </div>
+            <div style="flex: 1; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 12px; text-align: center;">
+              <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">Total Profit</div>
+              <div id="profit-total-profit" style="font-size: 2rem; font-weight: bold; color: #10b981;">₹0.00</div>
+            </div>
+          </div>
+          
+          <h3 style="margin-bottom: 1rem;">Recent Sales</h3>
+          <div class="table-container" style="max-height: 200px; overflow-y: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr>
+                  <th style="padding: 0.75rem; text-align: left; color: var(--text-muted);">Item</th>
+                  <th style="padding: 0.75rem; text-align: left; color: var(--text-muted);">Qty</th>
+                  <th style="padding: 0.75rem; text-align: left; color: var(--text-muted);">Revenue</th>
+                  <th style="padding: 0.75rem; text-align: left; color: var(--text-muted);">Profit</th>
+                </tr>
+              </thead>
+              <tbody id="profit-sales-tbody">
+                <!-- Data injected here -->
+              </tbody>
+            </table>
+          </div>
+          
+          <div style="margin-top: 2rem; text-align: right;">
+            <button id="close-profit-btn" class="btn-secondary">Close Dashboard</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toast Container -->
+      <div id="toast-container"></div>
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

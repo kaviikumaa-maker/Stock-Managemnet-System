@@ -1,12 +1,14 @@
 {
-  "name": "stockify-root",
-  "version": "1.0.0",
+  "name": "frontend",
+  "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
-    "install-all": "npm install && npm install --prefix backend && npm install --prefix frontend"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "vite": "^8.1.1"
   }
 }
